@@ -15,8 +15,8 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
-proto-plus = "^1.18.0"
-types-protobuf = "^3.17.4"
+proto-plus = ">=1.18.0"
+types-protobuf = ">=3.17.4"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^0.990"
