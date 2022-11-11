@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "proto-plus-stubs"
-version = "0.1.0"
+version = "0.2.0"
 license = "Apache-2.0"
 description = "Type stubs for proto-plus"
 authors = ["Henrik Bruåsdal <henrik.bruasdal@gmail.com>"]
@@ -18,10 +18,10 @@ python = "^3.7"
 proto-plus = "^1.18.0"
 types-protobuf = "^3.17.4"
 
-[tool.poetry.dev-dependencies]
-mypy = "^0.910"
-isort = "^5.9.3"
-black = "^21.9b0"
+[tool.poetry.group.dev.dependencies]
+mypy = "^0.990"
+black = "^22.10.0"
+isort = "^5.10.1"
 
 [tool.isort]
 profile = "black"
