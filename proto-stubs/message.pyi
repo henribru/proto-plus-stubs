@@ -46,6 +46,8 @@ class MessageMeta(type):
     ) -> None: ...
 
 class Message(metaclass=MessageMeta):
+    _pb: message.Message
+
     def __init__(
         self: _M,
         mapping: _M | Mapping | message.Message | None = ...,
