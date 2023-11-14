@@ -1,5 +1,6 @@
-from typing import Any, Generic, Literal, TypeVar, overload
+from typing import Any, Generic, Literal, NoReturn, TypeVar, overload
 
+from .message import Message
 from .primitives import ProtoType
 
 T = TypeVar("T")
@@ -140,7 +141,7 @@ class Field(Generic[T]):
     def package(self) -> str: ...
     @property
     def pb_type(self): ...
-    def __get__(self, obj, objtype=None) -> T: ...
+    def __get__(self, obj: Message, objtype: type[Message]) -> T: ...
 
 class RepeatedField(Field[T]):
     repeated: bool
@@ -248,7 +249,7 @@ class RepeatedField(Field[T]):
         json_name: str = ...,
         optional: bool = ...,
     ) -> None: ...
-    def __get__(self, obj, objtype=None) -> list[T]: ...  # type: ignore[override]
+    def __get__(self, obj: Message, objtype: type[Message]) -> list[T]: ...  # type: ignore[override]
 
 K = TypeVar("K")
 V = TypeVar("V")
@@ -423,4 +424,4 @@ class MapField(Field[V], Generic[K, V]):
         number: int,
         enum: str,
     ) -> None: ...
-    def __get__(self, obj, objtype=None) -> dict[K, V]: ...  # type: ignore[override]
+    def __get__(self, obj: Message, objtype: type[Message]) -> dict[K, V]: ...  # type: ignore[override]
