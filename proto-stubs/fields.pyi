@@ -4,6 +4,19 @@ from .primitives import ProtoType
 
 T = TypeVar("T")
 
+_IntegerProtoType = Literal[
+    ProtoType.INT64,
+    ProtoType.UINT64,
+    ProtoType.INT32,
+    ProtoType.FIXED64,
+    ProtoType.FIXED32,
+    ProtoType.UINT32,
+    ProtoType.SFIXED32,
+    ProtoType.SFIXED64,
+    ProtoType.SINT32,
+    ProtoType.SINT64,
+]
+
 class Field(Generic[T]):
     repeated: bool
     mcls_data: Any
@@ -28,18 +41,7 @@ class Field(Generic[T]):
     @overload
     def __init__(
         self: Field[int],
-        proto_type: Literal[
-            ProtoType.INT64,
-            ProtoType.UINT64,
-            ProtoType.INT32,
-            ProtoType.FIXED64,
-            ProtoType.FIXED32,
-            ProtoType.UINT32,
-            ProtoType.SFIXED32,
-            ProtoType.SFIXED64,
-            ProtoType.SINT32,
-            ProtoType.SINT64,
-        ],
+        proto_type: _IntegerProtoType,
         *,
         number: int,
         oneof: str = ...,
@@ -155,18 +157,7 @@ class RepeatedField(Field[T]):
     @overload
     def __init__(
         self: RepeatedField[int],
-        proto_type: Literal[
-            ProtoType.INT64,
-            ProtoType.UINT64,
-            ProtoType.INT32,
-            ProtoType.FIXED64,
-            ProtoType.FIXED32,
-            ProtoType.UINT32,
-            ProtoType.SFIXED32,
-            ProtoType.SFIXED64,
-            ProtoType.SINT32,
-            ProtoType.SINT64,
-        ],
+        proto_type: _IntegerProtoType,
         *,
         number: int,
         oneof: str = ...,
@@ -267,18 +258,7 @@ class MapField(Field[V], Generic[K, V]):
     @overload
     def __init__(
         self: MapField[int, float],
-        key_type: Literal[
-            ProtoType.INT64,
-            ProtoType.UINT64,
-            ProtoType.INT32,
-            ProtoType.FIXED64,
-            ProtoType.FIXED32,
-            ProtoType.UINT32,
-            ProtoType.SFIXED32,
-            ProtoType.SFIXED64,
-            ProtoType.SINT32,
-            ProtoType.SINT64,
-        ],
+        key_type: _IntegerProtoType,
         value_type: Literal[ProtoType.DOUBLE, ProtoType.FLOAT],
         *,
         number: int,
@@ -286,48 +266,15 @@ class MapField(Field[V], Generic[K, V]):
     @overload
     def __init__(
         self: MapField[int, int],
-        key_type: Literal[
-            ProtoType.INT64,
-            ProtoType.UINT64,
-            ProtoType.INT32,
-            ProtoType.FIXED64,
-            ProtoType.FIXED32,
-            ProtoType.UINT32,
-            ProtoType.SFIXED32,
-            ProtoType.SFIXED64,
-            ProtoType.SINT32,
-            ProtoType.SINT64,
-        ],
-        value_type: Literal[
-            ProtoType.INT64,
-            ProtoType.UINT64,
-            ProtoType.INT32,
-            ProtoType.FIXED64,
-            ProtoType.FIXED32,
-            ProtoType.UINT32,
-            ProtoType.SFIXED32,
-            ProtoType.SFIXED64,
-            ProtoType.SINT32,
-            ProtoType.SINT64,
-        ],
+        key_type: _IntegerProtoType,
+        value_type: _IntegerProtoType,
         *,
         number: int,
     ) -> None: ...
     @overload
     def __init__(
         self: MapField[int, bool],
-        key_type: Literal[
-            ProtoType.INT64,
-            ProtoType.UINT64,
-            ProtoType.INT32,
-            ProtoType.FIXED64,
-            ProtoType.FIXED32,
-            ProtoType.UINT32,
-            ProtoType.SFIXED32,
-            ProtoType.SFIXED64,
-            ProtoType.SINT32,
-            ProtoType.SINT64,
-        ],
+        key_type: _IntegerProtoType,
         value_type: Literal[ProtoType.BOOL],
         *,
         number: int,
@@ -335,18 +282,7 @@ class MapField(Field[V], Generic[K, V]):
     @overload
     def __init__(
         self: MapField[int, str],
-        key_type: Literal[
-            ProtoType.INT64,
-            ProtoType.UINT64,
-            ProtoType.INT32,
-            ProtoType.FIXED64,
-            ProtoType.FIXED32,
-            ProtoType.UINT32,
-            ProtoType.SFIXED32,
-            ProtoType.SFIXED64,
-            ProtoType.SINT32,
-            ProtoType.SINT64,
-        ],
+        key_type: _IntegerProtoType,
         value_type: Literal[ProtoType.STRING],
         *,
         number: int,
@@ -354,18 +290,7 @@ class MapField(Field[V], Generic[K, V]):
     @overload
     def __init__(
         self: MapField[int, bytes],
-        key_type: Literal[
-            ProtoType.INT64,
-            ProtoType.UINT64,
-            ProtoType.INT32,
-            ProtoType.FIXED64,
-            ProtoType.FIXED32,
-            ProtoType.UINT32,
-            ProtoType.SFIXED32,
-            ProtoType.SFIXED64,
-            ProtoType.SINT32,
-            ProtoType.SINT64,
-        ],
+        key_type: _IntegerProtoType,
         value_type: Literal[ProtoType.BYTES],
         *,
         number: int,
@@ -373,18 +298,7 @@ class MapField(Field[V], Generic[K, V]):
     @overload
     def __init__(
         self: MapField[int, V],
-        key_type: Literal[
-            ProtoType.INT64,
-            ProtoType.UINT64,
-            ProtoType.INT32,
-            ProtoType.FIXED64,
-            ProtoType.FIXED32,
-            ProtoType.UINT32,
-            ProtoType.SFIXED32,
-            ProtoType.SFIXED64,
-            ProtoType.SINT32,
-            ProtoType.SINT64,
-        ],
+        key_type: _IntegerProtoType,
         value_type: Literal[ProtoType.MESSAGE],
         *,
         number: int,
@@ -393,18 +307,7 @@ class MapField(Field[V], Generic[K, V]):
     @overload
     def __init__(
         self: MapField[int, V],
-        key_type: Literal[
-            ProtoType.INT64,
-            ProtoType.UINT64,
-            ProtoType.INT32,
-            ProtoType.FIXED64,
-            ProtoType.FIXED32,
-            ProtoType.UINT32,
-            ProtoType.SFIXED32,
-            ProtoType.SFIXED64,
-            ProtoType.SINT32,
-            ProtoType.SINT64,
-        ],
+        key_type: _IntegerProtoType,
         value_type: Literal[ProtoType.ENUM],
         *,
         number: int,
@@ -413,18 +316,7 @@ class MapField(Field[V], Generic[K, V]):
     @overload
     def __init__(
         self: MapField[int, V],
-        key_type: Literal[
-            ProtoType.INT64,
-            ProtoType.UINT64,
-            ProtoType.INT32,
-            ProtoType.FIXED64,
-            ProtoType.FIXED32,
-            ProtoType.UINT32,
-            ProtoType.SFIXED32,
-            ProtoType.SFIXED64,
-            ProtoType.SINT32,
-            ProtoType.SINT64,
-        ],
+        key_type: _IntegerProtoType,
         value_type: type[V],
         *,
         number: int,
@@ -432,18 +324,7 @@ class MapField(Field[V], Generic[K, V]):
     @overload
     def __init__(
         self: MapField[int, Any],
-        key_type: Literal[
-            ProtoType.INT64,
-            ProtoType.UINT64,
-            ProtoType.INT32,
-            ProtoType.FIXED64,
-            ProtoType.FIXED32,
-            ProtoType.UINT32,
-            ProtoType.SFIXED32,
-            ProtoType.SFIXED64,
-            ProtoType.SINT32,
-            ProtoType.SINT64,
-        ],
+        key_type: _IntegerProtoType,
         value_type: Literal[ProtoType.MESSAGE],
         *,
         number: int,
@@ -452,18 +333,7 @@ class MapField(Field[V], Generic[K, V]):
     @overload
     def __init__(
         self: MapField[int, Any],
-        key_type: Literal[
-            ProtoType.INT64,
-            ProtoType.UINT64,
-            ProtoType.INT32,
-            ProtoType.FIXED64,
-            ProtoType.FIXED32,
-            ProtoType.UINT32,
-            ProtoType.SFIXED32,
-            ProtoType.SFIXED64,
-            ProtoType.SINT32,
-            ProtoType.SINT64,
-        ],
+        key_type: _IntegerProtoType,
         value_type: Literal[ProtoType.ENUM],
         *,
         number: int,
@@ -481,18 +351,7 @@ class MapField(Field[V], Generic[K, V]):
     def __init__(
         self: MapField[str, int],
         key_type: Literal[ProtoType.STRING],
-        value_type: Literal[
-            ProtoType.INT64,
-            ProtoType.UINT64,
-            ProtoType.INT32,
-            ProtoType.FIXED64,
-            ProtoType.FIXED32,
-            ProtoType.UINT32,
-            ProtoType.SFIXED32,
-            ProtoType.SFIXED64,
-            ProtoType.SINT32,
-            ProtoType.SINT64,
-        ],
+        value_type: _IntegerProtoType,
         *,
         number: int,
     ) -> None: ...
