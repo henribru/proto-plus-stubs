@@ -22,22 +22,22 @@ class Field(Generic[T]):
     repeated: bool
     mcls_data: Any
     parent: Any
-    number: Any
+    number: int
     proto_type: ProtoType
     message: Any
     enum: Any
-    json_name: Any
-    optional: Any
-    oneof: Any
+    json_name: str | None
+    optional: bool
+    oneof: str | None
     @overload
     def __init__(
         self: Field[float],
         proto_type: Literal[ProtoType.DOUBLE, ProtoType.FLOAT],
         *,
         number: int,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -45,9 +45,9 @@ class Field(Generic[T]):
         proto_type: _IntegerProtoType,
         *,
         number: int,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -55,9 +55,9 @@ class Field(Generic[T]):
         proto_type: Literal[ProtoType.BOOL],
         *,
         number: int,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -65,9 +65,9 @@ class Field(Generic[T]):
         proto_type: Literal[ProtoType.STRING],
         *,
         number: int,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -75,9 +75,9 @@ class Field(Generic[T]):
         proto_type: Literal[ProtoType.BYTES],
         *,
         number: int,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -86,9 +86,9 @@ class Field(Generic[T]):
         *,
         number: int,
         message: type[T],
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -97,9 +97,9 @@ class Field(Generic[T]):
         *,
         number: int,
         enum: type[T],
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -107,9 +107,9 @@ class Field(Generic[T]):
         proto_type: type[T],
         *,
         number: int,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -118,9 +118,9 @@ class Field(Generic[T]):
         *,
         number: int,
         message: str,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -129,9 +129,9 @@ class Field(Generic[T]):
         *,
         number: int,
         enum: str,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @property
     def descriptor(self): ...
@@ -151,9 +151,9 @@ class RepeatedField(Field[T]):
         proto_type: Literal[ProtoType.DOUBLE, ProtoType.FLOAT],
         *,
         number: int,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -161,9 +161,9 @@ class RepeatedField(Field[T]):
         proto_type: _IntegerProtoType,
         *,
         number: int,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -171,9 +171,9 @@ class RepeatedField(Field[T]):
         proto_type: Literal[ProtoType.BOOL],
         *,
         number: int,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -181,9 +181,9 @@ class RepeatedField(Field[T]):
         proto_type: Literal[ProtoType.STRING],
         *,
         number: int,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -191,9 +191,9 @@ class RepeatedField(Field[T]):
         proto_type: Literal[ProtoType.BYTES],
         *,
         number: int,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -202,9 +202,9 @@ class RepeatedField(Field[T]):
         *,
         number: int,
         message: type[T],
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -213,9 +213,9 @@ class RepeatedField(Field[T]):
         *,
         number: int,
         enum: type[T],
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -223,9 +223,9 @@ class RepeatedField(Field[T]):
         proto_type: type[T],
         *,
         number: int,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -234,9 +234,9 @@ class RepeatedField(Field[T]):
         *,
         number: int,
         message: str,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
@@ -245,9 +245,9 @@ class RepeatedField(Field[T]):
         *,
         number: int,
         enum: str,
-        oneof: str = ...,
-        json_name: str = ...,
-        optional: bool = ...,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
     ) -> None: ...
     def __get__(self, obj: Message, objtype: type[Message]) -> list[T]: ...  # type: ignore[override]
 
