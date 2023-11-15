@@ -1,4 +1,4 @@
-from typing import Any, NamedTuple, Set
+from typing import Any, NamedTuple
 
 class _ProtoModule(NamedTuple):
     package: Any
@@ -6,5 +6,5 @@ class _ProtoModule(NamedTuple):
     manifest: Any
 
 def define_module(
-    package: str, *, marshal: str | None = None, manifest: Set[str] = ...
+    package: str, *, marshal: str | None = None, manifest: set[str] = ...
 ) -> _ProtoModule: ...
