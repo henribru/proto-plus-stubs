@@ -3,7 +3,7 @@ from typing import Any, Generic, Literal, NoReturn, TypeVar, overload
 from .message import Message
 from .primitives import ProtoType
 
-T = TypeVar("T")
+_T = TypeVar("_T")
 
 _IntegerProtoType = Literal[
     ProtoType.INT64,
@@ -18,7 +18,7 @@ _IntegerProtoType = Literal[
     ProtoType.SINT64,
 ]
 
-class Field(Generic[T]):
+class Field(Generic[_T]):
     repeated: bool
     mcls_data: Any
     parent: Any
@@ -81,30 +81,30 @@ class Field(Generic[T]):
     ) -> None: ...
     @overload
     def __init__(
-        self: Field[T],
+        self: Field[_T],
         proto_type: Literal[ProtoType.MESSAGE],
         *,
         number: int,
-        message: type[T],
+        message: type[_T],
         oneof: str | None = None,
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
-        self: Field[T],
+        self: Field[_T],
         proto_type: Literal[ProtoType.ENUM],
         *,
         number: int,
-        enum: type[T],
+        enum: type[_T],
         oneof: str | None = None,
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
-        self: Field[T],
-        proto_type: type[T],
+        self: Field[_T],
+        proto_type: type[_T],
         *,
         number: int,
         oneof: str | None = None,
@@ -141,9 +141,9 @@ class Field(Generic[T]):
     def package(self) -> str: ...
     @property
     def pb_type(self): ...
-    def __get__(self, obj: Message, objtype: type[Message]) -> T: ...
+    def __get__(self, obj: Message, objtype: type[Message]) -> _T: ...
 
-class RepeatedField(Field[T]):
+class RepeatedField(Field[_T]):
     repeated: bool
     @overload
     def __init__(
@@ -197,30 +197,30 @@ class RepeatedField(Field[T]):
     ) -> None: ...
     @overload
     def __init__(
-        self: RepeatedField[T],
+        self: RepeatedField[_T],
         proto_type: Literal[ProtoType.MESSAGE],
         *,
         number: int,
-        message: type[T],
+        message: type[_T],
         oneof: str | None = None,
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
-        self: RepeatedField[T],
+        self: RepeatedField[_T],
         proto_type: Literal[ProtoType.ENUM],
         *,
         number: int,
-        enum: type[T],
+        enum: type[_T],
         oneof: str | None = None,
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
     @overload
     def __init__(
-        self: RepeatedField[T],
-        proto_type: type[T],
+        self: RepeatedField[_T],
+        proto_type: type[_T],
         *,
         number: int,
         oneof: str | None = None,
@@ -249,13 +249,13 @@ class RepeatedField(Field[T]):
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
-    def __get__(self, obj: Message, objtype: type[Message]) -> list[T]: ...  # type: ignore[override]
+    def __get__(self, obj: Message, objtype: type[Message]) -> list[_T]: ...  # type: ignore[override]
 
-K = TypeVar("K")
-V = TypeVar("V")
+_K = TypeVar("_K")
+_V = TypeVar("_V")
 
-class MapField(Field[V], Generic[K, V]):
-    map_key_type: K
+class MapField(Field[_V], Generic[_K, _V]):
+    map_key_type: _K
     @overload
     def __init__(
         self: MapField[int, float],
@@ -298,27 +298,27 @@ class MapField(Field[V], Generic[K, V]):
     ) -> None: ...
     @overload
     def __init__(
-        self: MapField[int, V],
+        self: MapField[int, _V],
         key_type: _IntegerProtoType,
         value_type: Literal[ProtoType.MESSAGE],
         *,
         number: int,
-        message: type[V],
+        message: type[_V],
     ) -> None: ...
     @overload
     def __init__(
-        self: MapField[int, V],
+        self: MapField[int, _V],
         key_type: _IntegerProtoType,
         value_type: Literal[ProtoType.ENUM],
         *,
         number: int,
-        enum: type[V],
+        enum: type[_V],
     ) -> None: ...
     @overload
     def __init__(
-        self: MapField[int, V],
+        self: MapField[int, _V],
         key_type: _IntegerProtoType,
-        value_type: type[V],
+        value_type: type[_V],
         *,
         number: int,
     ) -> None: ...
@@ -382,27 +382,27 @@ class MapField(Field[V], Generic[K, V]):
     ) -> None: ...
     @overload
     def __init__(
-        self: MapField[str, V],
+        self: MapField[str, _V],
         key_type: Literal[ProtoType.STRING],
         value_type: Literal[ProtoType.MESSAGE],
         *,
         number: int,
-        message: type[V],
+        message: type[_V],
     ) -> None: ...
     @overload
     def __init__(
-        self: MapField[str, V],
+        self: MapField[str, _V],
         key_type: Literal[ProtoType.STRING],
         value_type: Literal[ProtoType.ENUM],
         *,
         number: int,
-        enum: type[V],
+        enum: type[_V],
     ) -> None: ...
     @overload
     def __init__(
-        self: MapField[str, V],
+        self: MapField[str, _V],
         key_type: Literal[ProtoType.STRING],
-        value_type: type[V],
+        value_type: type[_V],
         *,
         number: int,
     ) -> None: ...
@@ -424,4 +424,4 @@ class MapField(Field[V], Generic[K, V]):
         number: int,
         enum: str,
     ) -> None: ...
-    def __get__(self, obj: Message, objtype: type[Message]) -> dict[K, V]: ...  # type: ignore[override]
+    def __get__(self, obj: Message, objtype: type[Message]) -> dict[_K, _V]: ...  # type: ignore[override]
