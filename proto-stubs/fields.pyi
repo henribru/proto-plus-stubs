@@ -1,4 +1,13 @@
-from typing import Any, Generic, Literal, NoReturn, TypeVar, overload
+from typing import (
+    Any,
+    Generic,
+    Literal,
+    MutableMapping,
+    MutableSequence,
+    NoReturn,
+    TypeVar,
+    overload,
+)
 
 from .message import Message
 from .primitives import ProtoType
@@ -249,7 +258,7 @@ class RepeatedField(Field[_T]):
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
-    def __get__(self, obj: Message, objtype: type[Message]) -> list[_T]: ...  # type: ignore[override]
+    def __get__(self, obj: Message, objtype: type[Message]) -> MutableSequence[_T]: ...  # type: ignore[override]
 
 _K = TypeVar("_K")
 _V = TypeVar("_V")
@@ -424,4 +433,4 @@ class MapField(Field[_V], Generic[_K, _V]):
         number: int,
         enum: str,
     ) -> None: ...
-    def __get__(self, obj: Message, objtype: type[Message]) -> dict[_K, _V]: ...  # type: ignore[override]
+    def __get__(self, obj: Message, objtype: type[Message]) -> MutableMapping[_K, _V]: ...  # type: ignore[override]
