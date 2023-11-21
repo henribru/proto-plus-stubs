@@ -1,5 +1,5 @@
 from collections.abc import Mapping
-from typing import Any, TypeVar, overload
+from typing import Any, Literal, TypeVar, overload
 
 from google.protobuf import descriptor_pb2, message
 
@@ -19,7 +19,13 @@ class MessageMeta(type):
         cls: type[_M], obj: None = None, *, coerce: bool = False
     ) -> type[message.Message]: ...
     @overload
-    def pb(cls: type[_M], obj: _M, *, coerce: bool = False) -> message.Message: ...
+    def pb(
+        cls: type[_M], obj: _M, *, coerce: Literal[False] = False
+    ) -> message.Message: ...
+    @overload
+    def pb(
+        cls: type[_M], obj: _M | Mapping | message.Message, *, coerce: Literal[True]
+    ) -> message.Message: ...
     def wrap(cls: type[_M], pb: message.Message) -> _M: ...
     def serialize(cls: type[_M], instance: _M | Mapping | message.Message) -> bytes: ...
     def deserialize(cls: type[_M], payload: bytes) -> _M: ...
@@ -29,7 +35,10 @@ class MessageMeta(type):
         *,
         use_integers_for_enums: bool = True,
         including_default_value_fields: bool = True,
-        preserving_proto_field_name: bool = False
+        preserving_proto_field_name: bool = False,
+        sort_keys: bool = False,
+        indent: int | None = 2,
+        float_precision: int | None = None,
     ) -> str: ...
     def from_json(
         cls: type[_M], payload: str, *, ignore_unknown_fields: bool = False
@@ -39,10 +48,12 @@ class MessageMeta(type):
         instance: _M,
         *,
         use_integers_for_enums: bool = True,
-        preserving_proto_field_name: bool = True
+        preserving_proto_field_name: bool = True,
+        including_default_value_fields: bool = True,
+        float_precision: int | None = None,
     ) -> dict[str, Any]: ...
     def copy_from(
-        cls: type[_M], instance: _M | Mapping | message.Message, other
+        cls: type[_M], instance: _M, other: _M | Mapping | message.Message
     ) -> None: ...
 
 class Message(metaclass=MessageMeta):
@@ -53,7 +64,7 @@ class Message(metaclass=MessageMeta):
         mapping: _M | Mapping | message.Message | None = None,
         *,
         ignore_unknown_fields: bool = False,
-        **kwargs
+        **kwargs,
     ) -> None: ...
     def __contains__(self, key: str) -> bool: ...
 
