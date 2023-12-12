@@ -1,4 +1,4 @@
-from collections.abc import Mapping
+from collections.abc import Mapping, MutableMapping
 from typing import Any, Literal, TypeVar, overload
 
 from google.protobuf import descriptor_pb2, message
@@ -24,10 +24,10 @@ class MessageMeta(type):
     ) -> message.Message: ...
     @overload
     def pb(
-        cls: type[_M], obj: _M | Mapping | message.Message, *, coerce: Literal[True]
+        cls: type[_M], obj: _M | MutableMapping | message.Message, *, coerce: Literal[True]
     ) -> message.Message: ...
     def wrap(cls: type[_M], pb: message.Message) -> _M: ...
-    def serialize(cls: type[_M], instance: _M | Mapping | message.Message) -> bytes: ...
+    def serialize(cls: type[_M], instance: _M | MutableMapping | message.Message) -> bytes: ...
     def deserialize(cls: type[_M], payload: bytes) -> _M: ...
     def to_json(
         cls: type[_M],
@@ -61,7 +61,7 @@ class Message(metaclass=MessageMeta):
 
     def __init__(
         self: _M,
-        mapping: _M | Mapping | message.Message | None = None,
+        mapping: _M | MutableMapping | message.Message | None = None,
         *,
         ignore_unknown_fields: bool = False,
         **kwargs,
