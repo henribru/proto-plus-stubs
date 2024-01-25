@@ -9,6 +9,9 @@ from typing import (
     overload,
 )
 
+from google.protobuf.timestamp_pb2 import Timestamp
+
+from .datetime_helpers import DatetimeWithNanoseconds
 from .message import Message
 from .primitives import ProtoType
 
@@ -90,6 +93,17 @@ class Field(Generic[_T]):
     ) -> None: ...
     @overload
     def __init__(
+        self: Field[DatetimeWithNanoseconds],
+        proto_type: Literal[ProtoType.MESSAGE],
+        *,
+        number: int,
+        message: type[Timestamp],
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
+    ) -> None: ...
+    @overload
+    def __init__(
         self: Field[_T],
         proto_type: Literal[ProtoType.MESSAGE],
         *,
@@ -106,6 +120,16 @@ class Field(Generic[_T]):
         *,
         number: int,
         enum: type[_T],
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
+    ) -> None: ...
+    @overload
+    def __init__(
+        self: Field[DatetimeWithNanoseconds],
+        proto_type: type[Timestamp],
+        *,
+        number: int,
         oneof: str | None = None,
         json_name: str | None = None,
         optional: bool = False,
@@ -206,6 +230,17 @@ class RepeatedField(Field[_T]):
     ) -> None: ...
     @overload
     def __init__(
+        self: RepeatedField[DatetimeWithNanoseconds],
+        proto_type: Literal[ProtoType.MESSAGE],
+        *,
+        number: int,
+        message: type[Timestamp],
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
+    ) -> None: ...
+    @overload
+    def __init__(
         self: RepeatedField[_T],
         proto_type: Literal[ProtoType.MESSAGE],
         *,
@@ -222,6 +257,16 @@ class RepeatedField(Field[_T]):
         *,
         number: int,
         enum: type[_T],
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
+    ) -> None: ...
+    @overload
+    def __init__(
+        self: RepeatedField[DatetimeWithNanoseconds],
+        proto_type: type[Timestamp],
+        *,
+        number: int,
         oneof: str | None = None,
         json_name: str | None = None,
         optional: bool = False,
@@ -307,6 +352,15 @@ class MapField(Field[_V], Generic[_K, _V]):
     ) -> None: ...
     @overload
     def __init__(
+        self: MapField[int, DatetimeWithNanoseconds],
+        key_type: _IntegerProtoType,
+        value_type: Literal[ProtoType.MESSAGE],
+        *,
+        number: int,
+        message: type[Timestamp],
+    ) -> None: ...
+    @overload
+    def __init__(
         self: MapField[int, _V],
         key_type: _IntegerProtoType,
         value_type: Literal[ProtoType.MESSAGE],
@@ -322,6 +376,14 @@ class MapField(Field[_V], Generic[_K, _V]):
         *,
         number: int,
         enum: type[_V],
+    ) -> None: ...
+    @overload
+    def __init__(
+        self: MapField[int, DatetimeWithNanoseconds],
+        key_type: _IntegerProtoType,
+        value_type: type[Timestamp],
+        *,
+        number: int,
     ) -> None: ...
     @overload
     def __init__(
@@ -391,6 +453,15 @@ class MapField(Field[_V], Generic[_K, _V]):
     ) -> None: ...
     @overload
     def __init__(
+        self: MapField[str, DatetimeWithNanoseconds],
+        key_type: Literal[ProtoType.STRING],
+        value_type: Literal[ProtoType.MESSAGE],
+        *,
+        number: int,
+        message: type[Timestamp],
+    ) -> None: ...
+    @overload
+    def __init__(
         self: MapField[str, _V],
         key_type: Literal[ProtoType.STRING],
         value_type: Literal[ProtoType.MESSAGE],
@@ -406,6 +477,14 @@ class MapField(Field[_V], Generic[_K, _V]):
         *,
         number: int,
         enum: type[_V],
+    ) -> None: ...
+    @overload
+    def __init__(
+        self: MapField[str, DatetimeWithNanoseconds],
+        key_type: Literal[ProtoType.STRING],
+        value_type: type[Timestamp],
+        *,
+        number: int,
     ) -> None: ...
     @overload
     def __init__(
