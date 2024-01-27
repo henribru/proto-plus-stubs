@@ -9,13 +9,30 @@ from typing import (
     overload,
 )
 
+from google.protobuf.internal.enum_type_wrapper import EnumTypeWrapper as ProtobufEnum
+from google.protobuf.message import Message as ProtobufMessage
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from .datetime_helpers import DatetimeWithNanoseconds
-from .message import Message
-from .primitives import ProtoType
+from proto.datetime_helpers import DatetimeWithNanoseconds
+from proto.enums import Enum
+from proto.message import Message
+from proto.primitives import ProtoType
 
-_T = TypeVar("_T")
+_T = TypeVar(
+    "_T",
+    bound=(
+        float
+        | int
+        | bool
+        | str
+        | bytes
+        | Message
+        | Enum
+        | ProtobufMessage
+        | ProtobufEnum
+        | DatetimeWithNanoseconds
+    ),
+)
 
 _IntegerProtoType = Literal[
     ProtoType.INT64,
@@ -41,6 +58,7 @@ class Field(Generic[_T]):
     json_name: str | None
     optional: bool
     oneof: str | None
+
     @overload
     def __init__(
         self: Field[float],
@@ -91,6 +109,7 @@ class Field(Generic[_T]):
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
+    # Timestamp is special-cased by proto-plus.
     @overload
     def __init__(
         self: Field[DatetimeWithNanoseconds],
@@ -98,6 +117,19 @@ class Field(Generic[_T]):
         *,
         number: int,
         message: type[Timestamp],
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
+    ) -> None: ...
+    # The next overload accepts some non-message types as the message argument,
+    # so this overload is needed to forbid that.
+    @overload
+    def __init__(
+        self: Field[NoReturn],
+        proto_type: Literal[ProtoType.MESSAGE],
+        *,
+        number: int,
+        message: type[float | int | bool | str | bytes | Enum | ProtobufEnum],
         oneof: str | None = None,
         json_name: str | None = None,
         optional: bool = False,
@@ -113,6 +145,20 @@ class Field(Generic[_T]):
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
+    # The next overload accepts some non-enum types as the message argument,
+    # so this overload is needed to forbid that. Note that we can't forbid
+    # int and float because Enum inherits from IntEnum and would match those.
+    @overload
+    def __init__(
+        self: Field[NoReturn],
+        proto_type: Literal[ProtoType.ENUM],
+        *,
+        number: int,
+        enum: type[bool | str | bytes | Message | ProtobufMessage],
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
+    ) -> None: ...
     @overload
     def __init__(
         self: Field[_T],
@@ -124,10 +170,24 @@ class Field(Generic[_T]):
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
+    # Timestamp is special-cased by proto-plus.
     @overload
     def __init__(
         self: Field[DatetimeWithNanoseconds],
         proto_type: type[Timestamp],
+        *,
+        number: int,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
+    ) -> None: ...
+    # The next overload accepts some non-enum and non-message types,
+    # so this overload is needed to forbid that. Note that we can't forbid
+    # int and float because Enum inherits from IntEnum and would match those.
+    @overload
+    def __init__(
+        self: Field[NoReturn],
+        proto_type: type[bool | str | bytes],
         *,
         number: int,
         oneof: str | None = None,
@@ -144,6 +204,7 @@ class Field(Generic[_T]):
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
+    # We can't determine the type when it's passed as a string.
     @overload
     def __init__(
         self: Field[Any],
@@ -155,6 +216,7 @@ class Field(Generic[_T]):
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
+    # We can't determine the type when it's passed as a string.
     @overload
     def __init__(
         self: Field[Any],
@@ -178,6 +240,7 @@ class Field(Generic[_T]):
 
 class RepeatedField(Field[_T]):
     repeated: bool
+
     @overload
     def __init__(
         self: RepeatedField[float],
@@ -228,6 +291,7 @@ class RepeatedField(Field[_T]):
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
+    # Timestamp is special-cased by proto-plus.
     @overload
     def __init__(
         self: RepeatedField[DatetimeWithNanoseconds],
@@ -235,6 +299,19 @@ class RepeatedField(Field[_T]):
         *,
         number: int,
         message: type[Timestamp],
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
+    ) -> None: ...
+    # The next overload accepts some non-message types as the message argument,
+    # so this overload is needed to forbid that.
+    @overload
+    def __init__(
+        self: RepeatedField[NoReturn],
+        proto_type: Literal[ProtoType.MESSAGE],
+        *,
+        number: int,
+        message: type[float | int | bool | str | bytes | Enum | ProtobufEnum],
         oneof: str | None = None,
         json_name: str | None = None,
         optional: bool = False,
@@ -250,6 +327,20 @@ class RepeatedField(Field[_T]):
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
+    # The next overload accepts some non-enum types as the message argument,
+    # so this overload is needed to forbid that. Note that we can't forbid
+    # int and float because Enum inherits from IntEnum and would match those.
+    @overload
+    def __init__(
+        self: RepeatedField[NoReturn],
+        proto_type: Literal[ProtoType.ENUM],
+        *,
+        number: int,
+        enum: type[bool | str | bytes | Message | ProtobufMessage],
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
+    ) -> None: ...
     @overload
     def __init__(
         self: RepeatedField[_T],
@@ -261,10 +352,24 @@ class RepeatedField(Field[_T]):
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
+    # Timestamp is special-cased by proto-plus.
     @overload
     def __init__(
         self: RepeatedField[DatetimeWithNanoseconds],
         proto_type: type[Timestamp],
+        *,
+        number: int,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
+    ) -> None: ...
+    # The next overload accepts some non-enum and non-message types,
+    # so this overload is needed to forbid that. Note that we can't forbid
+    # int and float because Enum inherits from IntEnum and would match those.
+    @overload
+    def __init__(
+        self: RepeatedField[NoReturn],
+        proto_type: type[bool | str | bytes],
         *,
         number: int,
         oneof: str | None = None,
@@ -281,6 +386,7 @@ class RepeatedField(Field[_T]):
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
+    # We can't determine the type when it's passed as a string.
     @overload
     def __init__(
         self: RepeatedField[Any],
@@ -292,6 +398,7 @@ class RepeatedField(Field[_T]):
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
+    # We can't determine the type when it's passed as a string.
     @overload
     def __init__(
         self: RepeatedField[Any],
@@ -305,8 +412,22 @@ class RepeatedField(Field[_T]):
     ) -> None: ...
     def __get__(self, obj: Message, objtype: type[Message]) -> MutableSequence[_T]: ...  # type: ignore[override]
 
-_K = TypeVar("_K")
-_V = TypeVar("_V")
+_K = TypeVar("_K", bound=int | str)
+_V = TypeVar(
+    "_V",
+    bound=(
+        float
+        | int
+        | bool
+        | str
+        | bytes
+        | Message
+        | Enum
+        | ProtobufMessage
+        | ProtobufEnum
+        | DatetimeWithNanoseconds
+    ),
+)
 
 class MapField(Field[_V], Generic[_K, _V]):
     map_key_type: _K
@@ -350,6 +471,7 @@ class MapField(Field[_V], Generic[_K, _V]):
         *,
         number: int,
     ) -> None: ...
+    # Timestamp is special-cased by proto-plus.
     @overload
     def __init__(
         self: MapField[int, DatetimeWithNanoseconds],
@@ -358,6 +480,17 @@ class MapField(Field[_V], Generic[_K, _V]):
         *,
         number: int,
         message: type[Timestamp],
+    ) -> None: ...
+    # The next overload accepts some non-message types as the message argument,
+    # so this overload is needed to forbid that.
+    @overload
+    def __init__(
+        self: MapField[int, NoReturn],
+        key_type: _IntegerProtoType,
+        value_type: Literal[ProtoType.MESSAGE],
+        *,
+        number: int,
+        message: type[float | int | bool | str | bytes | Enum | ProtobufEnum],
     ) -> None: ...
     @overload
     def __init__(
@@ -368,6 +501,18 @@ class MapField(Field[_V], Generic[_K, _V]):
         number: int,
         message: type[_V],
     ) -> None: ...
+    # The next overload accepts some non-enum types as the message argument,
+    # so this overload is needed to forbid that. Note that we can't forbid
+    # int and float because Enum inherits from IntEnum and would match those.
+    @overload
+    def __init__(
+        self: MapField[int, NoReturn],
+        key_type: _IntegerProtoType,
+        value_type: Literal[ProtoType.ENUM],
+        *,
+        number: int,
+        enum: type[bool | str | bytes | Message | ProtobufMessage],
+    ) -> None: ...
     @overload
     def __init__(
         self: MapField[int, _V],
@@ -377,11 +522,23 @@ class MapField(Field[_V], Generic[_K, _V]):
         number: int,
         enum: type[_V],
     ) -> None: ...
+    # Timestamp is special-cased by proto-plus.
     @overload
     def __init__(
         self: MapField[int, DatetimeWithNanoseconds],
         key_type: _IntegerProtoType,
         value_type: type[Timestamp],
+        *,
+        number: int,
+    ) -> None: ...
+    # The next overload accepts some non-enum and non-message types,
+    # so this overload is needed to forbid that. Note that we can't forbid
+    # int and float because Enum inherits from IntEnum and would match those.
+    @overload
+    def __init__(
+        self: MapField[int, NoReturn],
+        key_type: _IntegerProtoType,
+        value_type: type[bool | str | bytes],
         *,
         number: int,
     ) -> None: ...
@@ -393,6 +550,7 @@ class MapField(Field[_V], Generic[_K, _V]):
         *,
         number: int,
     ) -> None: ...
+    # We can't determine the type when it's passed as a string.
     @overload
     def __init__(
         self: MapField[int, Any],
@@ -402,6 +560,7 @@ class MapField(Field[_V], Generic[_K, _V]):
         number: int,
         message: str,
     ) -> None: ...
+    # We can't determine the type when it's passed as a string.
     @overload
     def __init__(
         self: MapField[int, Any],
@@ -451,6 +610,7 @@ class MapField(Field[_V], Generic[_K, _V]):
         *,
         number: int,
     ) -> None: ...
+    # Timestamp is special-cased by proto-plus.
     @overload
     def __init__(
         self: MapField[str, DatetimeWithNanoseconds],
@@ -459,6 +619,17 @@ class MapField(Field[_V], Generic[_K, _V]):
         *,
         number: int,
         message: type[Timestamp],
+    ) -> None: ...
+    # The next overload accepts some non-message types as the message argument,
+    # so this overload is needed to forbid that.
+    @overload
+    def __init__(
+        self: MapField[str, NoReturn],
+        key_type: Literal[ProtoType.STRING],
+        value_type: Literal[ProtoType.MESSAGE],
+        *,
+        number: int,
+        message: type[float | int | bool | str | bytes | Enum | ProtobufEnum],
     ) -> None: ...
     @overload
     def __init__(
@@ -469,6 +640,18 @@ class MapField(Field[_V], Generic[_K, _V]):
         number: int,
         message: type[_V],
     ) -> None: ...
+    # The next overload accepts some non-enum types as the message argument,
+    # so this overload is needed to forbid that. Note that we can't forbid
+    # int and float because Enum inherits from IntEnum and would match those.
+    @overload
+    def __init__(
+        self: MapField[str, NoReturn],
+        key_type: Literal[ProtoType.STRING],
+        value_type: Literal[ProtoType.ENUM],
+        *,
+        number: int,
+        enum: type[bool | str | bytes | Message | ProtobufMessage],
+    ) -> None: ...
     @overload
     def __init__(
         self: MapField[str, _V],
@@ -478,11 +661,23 @@ class MapField(Field[_V], Generic[_K, _V]):
         number: int,
         enum: type[_V],
     ) -> None: ...
+    # Timestamp is special-cased by proto-plus.
     @overload
     def __init__(
         self: MapField[str, DatetimeWithNanoseconds],
         key_type: Literal[ProtoType.STRING],
         value_type: type[Timestamp],
+        *,
+        number: int,
+    ) -> None: ...
+    # The next overload accepts some non-enum and non-message types,
+    # so this overload is needed to forbid that. Note that we can't forbid
+    # int and float because Enum inherits from IntEnum and would match those.
+    @overload
+    def __init__(
+        self: MapField[str, NoReturn],
+        key_type: Literal[ProtoType.STRING],
+        value_type: type[bool | str | bytes],
         *,
         number: int,
     ) -> None: ...
@@ -494,6 +689,7 @@ class MapField(Field[_V], Generic[_K, _V]):
         *,
         number: int,
     ) -> None: ...
+    # We can't determine the type when it's passed as a string.
     @overload
     def __init__(
         self: MapField[str, Any],
@@ -503,6 +699,7 @@ class MapField(Field[_V], Generic[_K, _V]):
         number: int,
         message: str,
     ) -> None: ...
+    # We can't determine the type when it's passed as a string.
     @overload
     def __init__(
         self: MapField[str, Any],
