@@ -228,6 +228,17 @@ class Field(Generic[_T]):
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
+    # We can't determine the type when it's passed as a string.
+    @overload
+    def __init__(
+        self: Field[Any],
+        proto_type: str,
+        *,
+        number: int,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
+    ) -> None: ...
     @property
     def descriptor(self): ...
     @property
@@ -410,6 +421,17 @@ class RepeatedField(Field[_T]):
         json_name: str | None = None,
         optional: bool = False,
     ) -> None: ...
+    # We can't determine the type when it's passed as a string.
+    @overload
+    def __init__(
+        self: RepeatedField[Any],
+        proto_type: str,
+        *,
+        number: int,
+        oneof: str | None = None,
+        json_name: str | None = None,
+        optional: bool = False,
+    ) -> None: ...
     def __get__(self, obj: Message, objtype: type[Message]) -> MutableSequence[_T]: ...  # type: ignore[override]
 
 _K = TypeVar("_K", bound=int | str)
@@ -570,6 +592,15 @@ class MapField(Field[_V], Generic[_K, _V]):
         number: int,
         enum: str,
     ) -> None: ...
+    # We can't determine the type when it's passed as a string.
+    @overload
+    def __init__(
+        self: MapField[int, Any],
+        key_type: _IntegerProtoType,
+        value_type: str,
+        *,
+        number: int,
+    ) -> None: ...
     @overload
     def __init__(
         self: MapField[str, float],
@@ -708,5 +739,14 @@ class MapField(Field[_V], Generic[_K, _V]):
         *,
         number: int,
         enum: str,
+    ) -> None: ...
+    # We can't determine the type when it's passed as a string.
+    @overload
+    def __init__(
+        self: MapField[str, Any],
+        key_type: Literal[ProtoType.STRING],
+        value_type: str,
+        *,
+        number: int,
     ) -> None: ...
     def __get__(self, obj: Message, objtype: type[Message]) -> MutableMapping[_K, _V]: ...  # type: ignore[override]
